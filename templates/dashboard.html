@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Follow-Up Dashboard — {{ org_name }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Follow-Up Dashboard</h1>
+    <p>People who haven't had any logged contact in the last 30 days.</p>
+</div>
+
+{% if needs_follow_up %}
+<div class="card">
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Donation</th>
+                    <th>Last Contact</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in needs_follow_up %}
+                <tr>
+                    <td><a href="/contacts/{{ item.contact.id }}">{{ item.contact.name }}</a></td>
+                    <td><span class="badge badge-{{ item.contact.contact_type }}">{{ item.contact.contact_type }}</span></td>
+                    <td style="color:var(--green); font-weight:600;">
+                        {% if item.contact.contact_type == 'donor' and item.contact.donation_amount %}
+                            ${{ "%.2f"|format(item.contact.donation_amount) }}
+                        {% else %}—{% endif %}
+                    </td>
+                    <td><span class="chip-overdue">{{ item.last_date }}</span></td>
+                    <td style="text-align:right;">
+                        <a class="btn btn-outline" style="padding:5px 12px; font-size:.8rem;"
+                           href="/contacts/{{ item.contact.id }}/thank-you">Send thank-you</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+<div class="card">
+    <div class="empty">
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <polyline points="22 4 12 14.01 9 11.01"/>
+        </svg>
+        <p>Everyone is up to date. Nice work!</p>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

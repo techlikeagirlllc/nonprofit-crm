@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In — {{ org_name }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --primary: #0d9488; --primary-dk: #0f766e; --primary-lt: #f0fdfa;
+            --surface: #ffffff; --border: #e5ddd5;
+            --text: #1c1917; --muted: #78716c; --red: #dc2626;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(145deg, #134e4a 0%, #0d9488 50%, #0891b2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            font-feature-settings: "cv11";
+        }
+        .box {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,.20), 0 4px 16px rgba(0,0,0,.08);
+            padding: 44px 40px;
+            width: 100%;
+            max-width: 390px;
+        }
+        .logo {
+            width: 56px; height: 56px;
+            border-radius: 14px;
+            background: var(--primary-lt);
+            color: var(--primary);
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 2px 8px rgba(13,148,136,.18);
+        }
+        h1 { font-size: 1.3rem; font-weight: 700; text-align: center; margin-bottom: 4px; color: var(--text); letter-spacing: -.3px; }
+        .sub { text-align: center; color: var(--muted); font-size: .875rem; margin-bottom: 30px; }
+        label {
+            display: block;
+            font-size: .72rem;
+            font-weight: 700;
+            color: var(--muted);
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+        }
+        input[type="password"] {
+            width: 100%;
+            padding: 11px 13px;
+            border: 1.5px solid var(--border);
+            border-radius: 9px;
+            font-size: .9rem;
+            font-family: inherit;
+            color: var(--text);
+            outline: none;
+            margin-bottom: 18px;
+            transition: border-color .15s, box-shadow .15s;
+            background: var(--surface);
+        }
+        input[type="password"]:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(13,148,136,.12); }
+        .btn {
+            width: 100%;
+            padding: 11px;
+            border-radius: 9px;
+            font-size: .9rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            background: linear-gradient(135deg, #0d9488, #0891b2);
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(13,148,136,.30);
+            transition: all .15s;
+            font-family: inherit;
+        }
+        .btn:hover { background: linear-gradient(135deg, #0f766e, #0369a1); box-shadow: 0 4px 14px rgba(13,148,136,.38); }
+        .error { background: #fef2f2; border: 1px solid #fecaca; color: var(--red);
+                 border-radius: 8px; padding: 10px 14px; font-size: .82rem; margin-bottom: 16px; }
+    </style>
+</head>
+<body>
+<div class="box">
+    <div class="logo">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+    </div>
+    <h1>Welcome back</h1>
+    <p class="sub">Sign in to <strong>{{ org_name }}</strong></p>
+
+    {% if error %}<div class="error">{{ error }}</div>{% endif %}
+
+    <form method="POST">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Enter your password" required autofocus>
+        <button type="submit" class="btn">Sign In</button>
+    </form>
+</div>
+</body>
+</html>

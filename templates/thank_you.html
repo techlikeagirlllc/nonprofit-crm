@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Thank-You Note — {{ contact.name }} — {{ org_name }}{% endblock %}
+
+{% block content %}
+<a class="back-link" href="/contacts/{{ contact.id }}">← Back to {{ contact.name }}'s profile</a>
+
+<div class="page-header">
+    <h1>Your Support Means The World To Us!</h1>
+    <p><strong>{{ contact.name }}</strong></p>
+    <p><strong>{{ contact.address }}</strong></p>
+</div>
+
+<div class="card">
+    <div class="form-row">
+        <div>
+            <label>Draft note</label>
+            <textarea readonly rows="9">{{ note }}</textarea>
+        </div>
+    </div>
+    <a class="btn btn-primary" href="#" onclick="sendEmail(); return false;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
+        </svg>
+        Send Email
+    </a>
+
+<script>
+function sendEmail() {
+    var body    = document.querySelector('textarea').value;
+    var to      = {{ contact.email | tojson }};
+    var subject = encodeURIComponent('Thank You from {{ org_name | replace("'", "\\'") }}');
+    var encoded = encodeURIComponent(body);
+    window.location.href = 'mailto:' + to + '?subject=' + subject + '&body=' + encoded;
+}
+</script>
+</div>
+{% endblock %}

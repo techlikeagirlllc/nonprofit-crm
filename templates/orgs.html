@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NonProfit CRM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --primary: #4f46e5; --primary-dk: #3730a3; --primary-lt: #eef2ff;
+            --green: #059669; --bg: #f8fafc; --surface: #ffffff;
+            --border: #e2e8f0; --text: #1e293b; --muted: #64748b;
+            --radius: 10px; --shadow: 0 1px 3px rgba(0,0,0,.08);
+        }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text);
+               min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+               justify-content: flex-start; padding: 60px 24px; }
+
+        .hero { text-align: center; margin-bottom: 48px; }
+        .hero-icon { background: var(--primary-lt); border-radius: 16px; width: 64px; height: 64px;
+                     display: flex; align-items: center; justify-content: center; margin: 0 auto 18px; }
+        .hero h1 { font-size: 1.9rem; font-weight: 700; letter-spacing: -.5px; }
+        .hero p  { color: var(--muted); margin-top: 6px; font-size: .95rem; }
+
+        .org-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+                    gap: 14px; width: 100%; max-width: 700px; }
+
+        .org-card {
+            background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+            box-shadow: var(--shadow); display: flex; align-items: center; gap: 14px;
+            transition: box-shadow .15s, border-color .15s; overflow: hidden;
+        }
+        .org-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,.10); border-color: var(--primary); }
+        .org-card-link { display: flex; align-items: center; gap: 14px; flex: 1;
+                         text-decoration: none; color: var(--text); padding: 20px 0 20px 22px; }
+        .org-avatar { width: 40px; height: 40px; border-radius: 8px; background: var(--primary-lt);
+                      color: var(--primary); font-weight: 700; font-size: 1rem;
+                      display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .org-info strong { display: block; font-weight: 600; font-size: .95rem; }
+        .org-info span   { font-size: .78rem; color: var(--muted); }
+        .org-delete { padding: 20px 18px; background: none; border: none; cursor: pointer;
+                      color: #fca5a5; transition: color .15s; flex-shrink: 0; line-height: 0; }
+        .org-delete:hover { color: #dc2626; }
+
+        .divider { width: 100%; max-width: 700px; display: flex; align-items: center; gap: 12px;
+                   margin: 28px 0; color: var(--muted); font-size: .8rem; }
+        .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+        .create-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+                       box-shadow: var(--shadow); padding: 24px 28px; width: 100%; max-width: 700px; }
+        .create-card h2 { font-size: 1rem; font-weight: 600; margin-bottom: 16px; }
+
+        .field { display: flex; gap: 10px; }
+        input[type="text"], input[type="password"] {
+            flex: 1; padding: 9px 12px; border: 1px solid var(--border);
+            border-radius: 7px; font-size: .875rem; font-family: inherit;
+            color: var(--text); outline: none; transition: border-color .15s, box-shadow .15s; }
+        input[type="text"]:focus, input[type="password"]:focus {
+            border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79,70,229,.12); }
+        .pw-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        label { display: block; font-size: .75rem; font-weight: 500; color: var(--muted); margin-bottom: 4px; }
+        .btn { padding: 9px 18px; border-radius: 7px; font-size: .875rem; font-weight: 600;
+               cursor: pointer; border: none; background: var(--primary); color: #fff;
+               transition: background .15s; white-space: nowrap; }
+        .btn:hover { background: var(--primary-dk); }
+
+        .error { margin-top: 10px; font-size: .82rem; color: #dc2626; }
+        .empty { color: var(--muted); font-size: .9rem; padding: 8px 0; }
+    </style>
+</head>
+<body>
+
+<div class="hero">
+    <div class="hero-icon">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+    </div>
+    <h1>NonProfit CRM</h1>
+    <p>Select an organization to get started.</p>
+</div>
+
+{% if orgs %}
+<div class="org-grid">
+    {% for org in orgs %}
+    <div class="org-card">
+        <a class="org-card-link" href="/org/{{ org.slug }}/contacts">
+            <div class="org-avatar">{{ org.name[0].upper() }}</div>
+            <div class="org-info">
+                <strong>{{ org.name }}</strong>
+                <span>/org/{{ org.slug }}</span>
+            </div>
+        </a>
+        <form action="/orgs/{{ org.slug }}/delete" method="POST"
+              onsubmit="return confirm('Delete {{ org.name }} and all its data? This cannot be undone.');">
+            <button type="submit" class="org-delete" title="Delete organization">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+            </button>
+        </form>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p class="empty">No organizations yet. Create one below.</p>
+{% endif %}
+
+<div class="divider">or create new</div>
+
+<div class="create-card">
+    <h2>Add an Organization</h2>
+    <form action="/orgs/create" method="POST">
+        <div class="field">
+            <input type="text" name="name" placeholder="e.g. Riverside Food Bank" required>
+        </div>
+        <div class="pw-row">
+            <div>
+                <label>Password</label>
+                <input type="password" name="password" placeholder="At least 8 characters" required>
+            </div>
+            <div>
+                <label>Confirm Password</label>
+                <input type="password" name="confirm" placeholder="Repeat password" required>
+            </div>
+        </div>
+        {% if error %}
+        <p class="error" style="margin-top:10px;">{{ error }}</p>
+        {% endif %}
+        <button type="submit" class="btn" style="margin-top:14px; width:100%;">Create Organization</button>
+    </form>
+</div>
+
+</body>
+</html>

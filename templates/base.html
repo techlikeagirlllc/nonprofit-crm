@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}NonProfit CRM{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --primary:    #0d9488;
+            --primary-dk: #0f766e;
+            --primary-lt: #f0fdfa;
+            --amber:      #d97706;
+            --amber-lt:   #fffbeb;
+            --green:      #059669;
+            --green-lt:   #ecfdf5;
+            --red:        #dc2626;
+            --red-lt:     #fef2f2;
+            --bg:         #f7f4ef;
+            --surface:    #ffffff;
+            --border:     #e5ddd5;
+            --text:       #1c1917;
+            --muted:      #78716c;
+            --radius:     12px;
+            --shadow:     0 1px 4px rgba(15,118,110,.07), 0 1px 2px rgba(0,0,0,.04);
+            --shadow-md:  0 4px 16px rgba(15,118,110,.10), 0 2px 4px rgba(0,0,0,.04);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-feature-settings: "cv11";
+        }
+
+        /* ── Top nav ── */
+        header {
+            background: linear-gradient(135deg, #134e4a 0%, #0d9488 100%);
+            box-shadow: 0 2px 12px rgba(13,148,136,.25);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-inner {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 24px;
+            height: 62px;
+            display: flex;
+            align-items: center;
+            gap: 28px;
+        }
+
+        .nav-brand {
+            font-weight: 700;
+            font-size: 1.05rem;
+            color: #ffffff;
+            text-decoration: none;
+            letter-spacing: -.3px;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            flex-shrink: 0;
+        }
+
+        nav a {
+            text-decoration: none;
+            font-size: .875rem;
+            font-weight: 500;
+            color: rgba(255,255,255,.72);
+            padding: 6px 12px;
+            border-radius: 7px;
+            transition: color .15s, background .15s;
+        }
+
+        nav a:hover { color: #fff; background: rgba(255,255,255,.12); }
+
+        nav a.active {
+            color: #fff;
+            background: rgba(255,255,255,.18);
+        }
+
+        .nav-right {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-org-chip {
+            font-size: .75rem;
+            font-weight: 600;
+            color: rgba(255,255,255,.85);
+            background: rgba(255,255,255,.15);
+            border: 1px solid rgba(255,255,255,.22);
+            border-radius: 999px;
+            padding: 4px 12px;
+            letter-spacing: .01em;
+        }
+
+        .nav-signout {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: .78rem;
+            font-weight: 500;
+            color: rgba(255,255,255,.6);
+            padding: 5px 10px;
+            border-radius: 6px;
+            transition: color .15s, background .15s;
+        }
+
+        .nav-signout:hover { color: #fff; background: rgba(255,255,255,.12); }
+
+        /* ── Page wrapper ── */
+        main {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 38px 24px 64px;
+            width: 100%;
+            flex: 1;
+        }
+
+        /* ── Page heading ── */
+        .page-header { margin-bottom: 28px; }
+        .page-header h1 {
+            font-size: 1.65rem;
+            font-weight: 700;
+            letter-spacing: -.45px;
+            color: var(--text);
+        }
+        .page-header p { color: var(--muted); margin-top: 5px; font-size: .9rem; }
+
+        /* ── Card ── */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 28px;
+            margin-bottom: 22px;
+        }
+
+        .card-title {
+            font-size: .95rem;
+            font-weight: 600;
+            margin-bottom: 18px;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-title::before {
+            content: '';
+            display: inline-block;
+            width: 3px;
+            height: 16px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
+        /* ── Table ── */
+        .table-wrap { overflow-x: auto; }
+
+        table { width: 100%; border-collapse: collapse; font-size: .875rem; }
+
+        thead th {
+            text-align: left;
+            padding: 10px 14px;
+            font-size: .7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .07em;
+            color: var(--muted);
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+        }
+
+        tbody tr { border-bottom: 1px solid var(--border); transition: background .1s; }
+        tbody tr:last-child { border-bottom: none; }
+        tbody tr:hover { background: #faf8f5; }
+        tbody td { padding: 13px 14px; }
+
+        tbody a {
+            color: var(--primary-dk);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        tbody a:hover { color: var(--primary); text-decoration: underline; }
+
+        /* ── Badges ── */
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 999px;
+            font-size: .7rem;
+            font-weight: 700;
+            text-transform: capitalize;
+            letter-spacing: .02em;
+        }
+
+        .badge-donor     { background: #fef3c7; color: #92400e; }
+        .badge-volunteer { background: #ccfbf1; color: #0f766e; }
+
+        /* ── Forms ── */
+        .form-row { display: grid; gap: 14px; margin-bottom: 18px; }
+        .form-row.cols-2 { grid-template-columns: 1fr 1fr; }
+        .form-row.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+
+        label {
+            display: block;
+            font-size: .78rem;
+            font-weight: 600;
+            color: var(--muted);
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="number"],
+        input[type="date"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px 13px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            font-size: .875rem;
+            font-family: inherit;
+            color: var(--text);
+            background: var(--surface);
+            transition: border-color .15s, box-shadow .15s;
+            outline: none;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(13,148,136,.12);
+        }
+
+        /* ── Buttons ── */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: .875rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all .15s;
+            text-decoration: none;
+            letter-spacing: .01em;
+        }
+
+        .btn:active { transform: translateY(1px); }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #0d9488, #0891b2);
+            color: #fff;
+            box-shadow: 0 2px 6px rgba(13,148,136,.35);
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #0f766e, #0369a1);
+            box-shadow: 0 4px 12px rgba(13,148,136,.40);
+        }
+
+        .btn-green {
+            background: linear-gradient(135deg, #d97706, #f59e0b);
+            color: #fff;
+            box-shadow: 0 2px 6px rgba(217,119,6,.30);
+        }
+        .btn-green:hover {
+            background: linear-gradient(135deg, #b45309, #d97706);
+            box-shadow: 0 4px 10px rgba(217,119,6,.35);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary-dk);
+            border: 1.5px solid var(--primary);
+        }
+        .btn-outline:hover { background: var(--primary-lt); }
+
+        /* ── Empty state ── */
+        .empty { text-align: center; padding: 48px 24px; color: var(--muted); }
+        .empty svg { margin-bottom: 12px; opacity: .35; }
+        .empty p { font-size: .95rem; }
+
+        /* ── Overdue flag ── */
+        .chip-overdue {
+            color: var(--red);
+            font-weight: 600;
+            font-size: .85rem;
+        }
+
+        /* ── Back link ── */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--muted);
+            text-decoration: none;
+            font-size: .85rem;
+            font-weight: 500;
+            margin-bottom: 20px;
+            transition: color .15s;
+        }
+        .back-link:hover { color: var(--primary); }
+
+        /* ── Readonly textarea ── */
+        textarea[readonly] {
+            background: var(--bg);
+            color: var(--text);
+            resize: vertical;
+            line-height: 1.75;
+            min-height: 210px;
+            cursor: text;
+        }
+
+        /* ── Meta row ── */
+        .meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--muted);
+            font-size: .875rem;
+            flex-wrap: wrap;
+            margin-bottom: 6px;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 620px) {
+            .form-row.cols-2, .form-row.cols-3 { grid-template-columns: 1fr; }
+            .nav-inner { gap: 12px; }
+            .nav-org-chip { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="nav-inner">
+        <a class="nav-brand" href="/contacts">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            NonProfit CRM
+        </a>
+        <nav>
+            <a href="/contacts"  {% if request.path == '/contacts'  %}class="active"{% endif %}>Contacts</a>
+            <a href="/dashboard" {% if request.path == '/dashboard' %}class="active"{% endif %}>Follow-Up Dashboard</a>
+        </nav>
+        <div class="nav-right">
+            <span class="nav-org-chip">{{ org_name }}</span>
+            <form action="/logout" method="POST" style="margin:0;">
+                <button type="submit" class="nav-signout">Sign out</button>
+            </form>
+        </div>
+    </div>
+</header>
+
+<main>
+    {% block content %}{% endblock %}
+</main>
+
+</body>
+</html>
