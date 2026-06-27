@@ -4,6 +4,8 @@ A lightweight contact relationship manager built for nonprofits. Track donors an
 
 Designed by **TechLikeAGirl** · Powered by **Claude**
 
+**Live demo:** https://nonprofit-crm.onrender.com
+
 ---
 
 ## What It Does
